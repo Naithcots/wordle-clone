@@ -6,11 +6,12 @@ enum Color {
 
 interface IChar {
   char: string;
-  color: Color;
+  color?: Color;
 }
 
 interface IWord {
-  word: IChar[];
+  wordArr?: IChar[];
+  wordStr: string;
   // hidden: boolean;
 }
 
