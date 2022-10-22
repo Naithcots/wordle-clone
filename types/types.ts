@@ -1,6 +1,6 @@
 enum Color {
   gray = "gray",
-  yellow = "yellow",
+  yellow = "#fbbf24",
   green = "green",
 }
 
@@ -12,7 +12,6 @@ interface IChar {
 type wordArr = IChar[];
 
 interface IWord {
-  // wordArr: IChar[];
   wordArr: wordArr;
   wordStr: string;
 }
