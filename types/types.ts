@@ -6,14 +6,16 @@ enum Color {
 
 interface IChar {
   char: string;
-  color?: Color;
+  color: Color;
 }
 
+type wordArr = IChar[];
+
 interface IWord {
-  wordArr?: IChar[];
+  // wordArr: IChar[];
+  wordArr: wordArr;
   wordStr: string;
-  // hidden: boolean;
 }
 
 export { Color };
-export type { IChar, IWord };
+export type { IChar, IWord, wordArr };

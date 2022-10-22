@@ -34,7 +34,7 @@ const Home: NextPage = () => {
 
       <Header />
       <main className={styles.main}>
-        {solution}
+        {/* {solution} */}
         {solution && <Wordle solution={solution} />}
       </main>
     </>

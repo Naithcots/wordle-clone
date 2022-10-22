@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Color, IChar, IWord } from "../../types/types";
+import { Color, IWord, wordArr } from "../../types/types";
 import Line from "../Line/Line";
 import styles from "./Wordle.module.css";
 
@@ -8,38 +8,70 @@ interface Props {
 }
 
 const Wordle = ({ solution }: Props) => {
-  const [word, setWord] = useState<IWord>({ wordStr: "" });
-  const [history, setHistory] = useState<IWord[]>([]);
+  const [turn, setTurn] = useState<number>(0);
+  const [word, setWord] = useState<IWord>({ wordStr: "", wordArr: [] });
+  const [words, setWords] = useState<IWord[]>([...Array(5)]);
+  const [solutionFound, setSolutionFound] = useState<boolean>(false);
 
-  console.log(word);
+  const addWord = (word: string, idx: number) => {
+    // const wordsCopy = words;
+    // const wordArr: IChar[] = formatWord(word);
+    // const newWord: IWord = { wordArr, wordStr: word };
+    // wordsCopy[idx] = newWord;
+    // setWords(wordsCopy);
 
-  const handleKeyUp = (e: KeyboardEvent) => {
-    const key = e.key.toLowerCase();
-    const isSingleLetter = new RegExp(/^[a-z]$/).test(key);
+    setWords((prev) => {
+      return prev.map((e: IWord, i: number) =>
+        i === idx ? { wordStr: word, wordArr: formatWord(word) } : e
+      );
+    });
+  };
+
+  const formatWord = (word: string): wordArr => {
+    return word.split("").map((char, idx) => {
+      const { gray, yellow, green } = Color;
+      let color: Color = gray;
+      const existInSolution: boolean = solution.includes(char);
+      const positionCorrect: boolean = solution[idx] === char;
+
+      if (positionCorrect) color = green;
+      else if (existInSolution) color = yellow;
+
+      return { char, color };
+    });
+  };
+
+  const handleKeyUp = (e: KeyboardEvent): void => {
+    const key: string = e.key.toLowerCase();
+    const isSingleLetter: boolean = new RegExp(/^[a-z]$/).test(key);
     if (!isSingleLetter && key !== "backspace" && key !== "enter") return;
 
     if (isSingleLetter) {
       if (word.wordStr.length < 5) {
-        setWord((prev) => ({ wordStr: prev.wordStr + key }));
+        const wordStr: string = word.wordStr + key;
+        const wordArr: wordArr = formatWord(wordStr);
+        setWord({ wordStr, wordArr });
       }
-    }
-
-    if (key === "backspace") {
-      if (word.wordStr.length)
-        setWord((prev) => ({ wordStr: prev.wordStr.slice(0, -1) }));
-    }
-
-    if (key === "enter") {
+    } else if (key === "backspace") {
+      if (word.wordStr.length) {
+        const wordStr: string = word.wordStr.slice(0, -1);
+        const wordArr: wordArr = formatWord(wordStr);
+        setWord({ wordStr, wordArr });
+      }
+    } else if (key === "enter") {
       if (word.wordStr.length === 5) {
-        console.log("Word check:", word);
+        // console.log("Word check:", word);
 
         if (word.wordStr === solution) {
-          console.log("Solution guessed! Congratulations");
+          setSolutionFound(true);
+          addWord(word.wordStr, turn);
+          setWord({ wordStr: "", wordArr: [] });
+          setTurn((prev) => prev + 1);
           return;
         }
 
-        const isDuplicate: boolean = history.find(
-          (_word) => _word.wordStr === word.wordStr
+        const isDuplicate: boolean = words.find(
+          (_word) => _word?.wordStr === word.wordStr
         )
           ? true
           : false;
@@ -48,42 +80,29 @@ const Wordle = ({ solution }: Props) => {
           return;
         }
 
-        const wordArr: IChar[] = word.wordStr.split("").map((char, idx) => {
-          let color: Color = Color.gray;
-          const isContainedInSolution: boolean = solution.includes(char);
-          const isPositionCorrect: boolean = solution[idx] === char;
-
-          if (isPositionCorrect) color = Color.green;
-          else if (isContainedInSolution) color = Color.yellow;
-
-          return { char, color };
-        });
-
-        const newHistoryEntry: IWord = {
-          wordArr,
-          wordStr: word.wordStr,
-        };
-        setHistory((prev) => [...prev, newHistoryEntry]);
+        addWord(word.wordStr, turn);
+        setWord({ wordStr: "", wordArr: [] });
+        setTurn((prev) => prev + 1);
       }
     }
   };
 
   useEffect(() => {
-    document.addEventListener("keyup", handleKeyUp);
+    !solutionFound && document.addEventListener("keyup", handleKeyUp);
     return () => {
       document.removeEventListener("keyup", handleKeyUp);
     };
-  }, [word, history]);
+  }, [word, words]);
 
   return (
     <div className={styles.wordle}>
-      {history.map((word, idx) => (
-        <Line word={word} key={idx} />
-      ))}
-      <Line word={word} />
-      {[...Array(5 - history.length - 1)].map((_, idx) => (
-        <Line key={idx} />
-      ))}
+      {words.map((e, idx) =>
+        idx === turn ? (
+          <Line isCurrent key={idx} word={word} />
+        ) : (
+          <Line isWords key={idx} word={e} />
+        )
+      )}
     </div>
   );
 };
