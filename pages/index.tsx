@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Header from "../components/Header/Header";
 import Wordle from "../components/Wordle/Wordle";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosResponse } from "axios";
@@ -8,22 +7,63 @@ import { NextPage } from "next";
 import styles from "../styles/Home.module.css";
 import getRandom from "../helpers/getRandom";
 import Modal from "../components/Modal/Modal";
+import { gameStateEnum } from "../types/types";
 
 const Home: NextPage = () => {
   const [solution, setSolution] = useState<string | null>(null);
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [gameState, setGameState] = useState<gameStateEnum>(
+    gameStateEnum.start
+  );
+  const [gameOverModalOpen, setGameOverModalOpen] = useState<boolean>(false);
+  const [finishModalOpen, setFinishModalOpen] = useState<boolean>(false);
   const { error, isLoading, data } = useQuery(["words"], () =>
     axios
       .get("http://localhost:1337/words")
       .then((res: AxiosResponse) => res.data)
   );
 
+  const restartGame = async (): Promise<void> => {
+    const word: string = getRandom(data);
+    setSolution(word);
+    setFinishModalOpen(false);
+    setGameOverModalOpen(false);
+    setGameState(gameStateEnum.inProgress);
+  };
+
+  // Initial game depends on async words data load
   useEffect(() => {
-    if (data) {
-      const word = getRandom(data);
-      setSolution(word);
-    }
+    data && restartGame();
   }, [data]);
+
+  useEffect(() => {
+    if (gameState === gameStateEnum.start) {
+      data && restartGame();
+    }
+    if (gameState === gameStateEnum.finishWin) {
+      setFinishModalOpen(true);
+    }
+    if (gameState === gameStateEnum.finishLose) {
+      setGameOverModalOpen(true);
+    }
+  }, [gameState]);
+
+  if (error)
+    return (
+      <div className={styles.info}>
+        <h2 className={styles["error-text"]}>
+          Oopsie! We couldn't get words for you.
+        </h2>
+        <p className={styles.text}>Please try again later</p>
+      </div>
+    );
+
+  if (isLoading)
+    return (
+      <div className={styles["spinner-box"]}>
+        <img src="/circle-notch-solid.svg" className={styles.spinner} />
+        <p className={styles.text}>Loading</p>
+      </div>
+    );
 
   return (
     <>
@@ -33,15 +73,40 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Header />
       <main className={styles.main}>
-        {/* {solution} */}
-        {solution && <Wordle solution={solution} />}
+        {gameState != gameStateEnum.start && (
+          <Wordle
+            solution={solution}
+            gameState={gameState}
+            setGameState={setGameState}
+          />
+        )}
       </main>
-      <button onClick={() => setModalOpen(true)}>open</button>
-      <Modal open={modalOpen} setOpen={setModalOpen}>
-        <h1>Modal</h1>
-      </Modal>
+
+      {finishModalOpen && (
+        <Modal setOpen={setFinishModalOpen} delay={1500}>
+          <h1>Congratulations!</h1>
+          <p>You solved this puzzle.</p>
+          <p>One more round?</p>
+          <button onClick={() => setGameState(gameStateEnum.start)}>
+            New game
+          </button>
+        </Modal>
+      )}
+
+      {gameOverModalOpen && (
+        <Modal setOpen={setFinishModalOpen} delay={1500}>
+          <h1>Game Over!</h1>
+          <p>Better luck next time.</p>
+          <p>
+            The solution is: <b>{solution}</b>
+          </p>
+          <p>One more round?</p>
+          <button onClick={() => setGameState(gameStateEnum.start)}>
+            New game
+          </button>
+        </Modal>
+      )}
     </>
   );
 };

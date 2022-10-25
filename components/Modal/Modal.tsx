@@ -1,30 +1,30 @@
-import { ReactNode, useEffect, useRef } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import styles from "./Modal.module.css";
 
 interface Props {
-  open: boolean;
   setOpen: Function;
   children: ReactNode;
+  delay?: number;
 }
 
-const Modal = ({ open, setOpen, children }: Props) => {
-  // const ref = useRef<HTMLDivElement | null>(null);
+const Modal = ({ setOpen, children, delay }: Props) => {
+  const [show, setShow] = useState<Boolean>(false);
 
-  // useEffect(() => {
-  //   console.log(open);
-  // }, [open]);
+  // Postpone modal popup if delay variable provided
+  useEffect(() => {
+    let delayTimeout: NodeJS.Timeout;
+    if (delay) {
+      delayTimeout = setTimeout(() => {
+        setShow(true);
+      }, delay);
+    } else setShow(true);
 
-  // useEffect(() => {
-  //   ref &&
-  //     ref.current &&
-  //     ref.current.addEventListener("click", () => setOpen(false));
-
-  //   return () => ref.current.addEventListener("click", () => setOpen(false));
-  // }, []);
+    return () => clearTimeout(delayTimeout);
+  }, [open]);
 
   return (
     <div
-      className={`${styles["modal-window"]} ${open ? styles.open : ""}`}
+      className={`${styles["modal-window"]} ${show ? styles.show : ""}`}
       onClick={() => setOpen(false)}
     >
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>

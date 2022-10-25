@@ -17,16 +17,18 @@
 
   padding: 1.25em;
 
-  background-color: #222;
+  background-color: var(--modal-background);
   border-radius: 8px;
+
+  box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
 }
 
-.open {
+.show {
   display: grid;
   animation: filterOn 300ms forwards;
 }
 
-.open > div {
+.show > div {
   animation: fadeIn 300ms forwards;
 }
 

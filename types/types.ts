@@ -16,5 +16,12 @@ interface IWord {
   wordStr: string;
 }
 
-export { Color };
+enum gameStateEnum {
+  start = 1,
+  inProgress = 2,
+  finishWin = 3,
+  finishLose = 4,
+}
+
+export { Color, gameStateEnum };
 export type { IChar, IWord, wordArr };

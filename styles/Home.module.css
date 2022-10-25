@@ -1,4 +1,58 @@
 .main {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
+}
+
+.info {
+  margin: 0 auto;
+  padding: 1em;
+  width: 50%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  border-radius: 8px;
+  background-color: var(--info-background);
+
+  box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
+}
+
+.error-text {
+  color: red;
+  margin: 0.5em 0;
+}
+
+.text {
+  margin: 0.5em 0;
+  font-weight: bold;
+
+  font-size: 1.25rem;
+  opacity: 0.75;
+}
+
+.spinner-box {
+  margin: 1em 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.spinner {
+  aspect-ratio: 1 / 1;
+  width: 50px;
+
+  filter: var(--img-filter);
+  animation: rotate 3000ms linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotateZ(0deg);
+  }
+  to {
+    transform: rotateZ(360deg);
+  }
 }
