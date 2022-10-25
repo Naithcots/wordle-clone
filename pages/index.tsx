@@ -7,9 +7,11 @@ import { useEffect, useState } from "react";
 import { NextPage } from "next";
 import styles from "../styles/Home.module.css";
 import getRandom from "../helpers/getRandom";
+import Modal from "../components/Modal/Modal";
 
 const Home: NextPage = () => {
   const [solution, setSolution] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
   const { error, isLoading, data } = useQuery(["words"], () =>
     axios
       .get("http://localhost:1337/words")
@@ -17,7 +19,6 @@ const Home: NextPage = () => {
   );
 
   useEffect(() => {
-    // Set random solution as fast as possible
     if (data) {
       const word = getRandom(data);
       setSolution(word);
@@ -37,6 +38,10 @@ const Home: NextPage = () => {
         {/* {solution} */}
         {solution && <Wordle solution={solution} />}
       </main>
+      <button onClick={() => setModalOpen(true)}>open</button>
+      <Modal open={modalOpen} setOpen={setModalOpen}>
+        <h1>Modal</h1>
+      </Modal>
     </>
   );
 };

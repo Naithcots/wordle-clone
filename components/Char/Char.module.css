@@ -17,7 +17,7 @@
 
 .active {
   animation: onType 150ms;
-  border-color: darkgray;
+  border-color: var(--char-border);
 }
 
 .uncover {

@@ -1,12 +1,14 @@
 :root {
   --background: #fff;
   --img-filter: invert(0%);
+  --char-border: #999;
 }
 
 [data-theme="dark"] {
   color-scheme: dark;
   --background: #111827;
   --img-filter: invert(100%);
+  --char-border: darkgray;
 }
 
 html,
