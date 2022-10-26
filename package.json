@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "server": "json-server ./data/words.json -p 1337"
+    "serverWordle": "json-server ./data/wordleWords.json -p 1337",
+    "serverWyslownik": "json-server ./data/wyslownikWords.json -p 1338"
   },
   "dependencies": {
     "@tanstack/react-query": "^4.12.0",

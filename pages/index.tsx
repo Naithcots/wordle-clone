@@ -1,5 +1,5 @@
 import Head from "next/head";
-import Wordle from "../components/Wordle/Wordle";
+import WordleGame from "../components/WordleGame/Wordle";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
@@ -75,7 +75,7 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         {gameState != gameStateEnum.start && (
-          <Wordle
+          <WordleGame
             solution={solution}
             gameState={gameState}
             setGameState={setGameState}

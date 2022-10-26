@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Color, gameStateEnum, IWord, wordArr } from "../../types/types";
-import Line from "../Line/Line";
+import formatWord from "../../helpers/formatWord";
+import { gameStateEnum, IWord, wordArr } from "../../types/types";
+import Line from "./Line/Line";
 import styles from "./Wordle.module.css";
 
 interface Props {
@@ -9,7 +10,7 @@ interface Props {
   setGameState: Dispatch<SetStateAction<gameStateEnum>>;
 }
 
-const Wordle = ({ solution, gameState, setGameState }: Props) => {
+const WordleGame = ({ solution, gameState, setGameState }: Props) => {
   const [turn, setTurn] = useState<number>(0);
   const [word, setWord] = useState<IWord>({ wordStr: "", wordArr: [] });
   const [words, setWords] = useState<IWord[]>([...Array(5)]);
@@ -18,22 +19,8 @@ const Wordle = ({ solution, gameState, setGameState }: Props) => {
     // Set word at correct index in words array
     setWords((prev) => {
       return prev.map((e: IWord, i: number) =>
-        i === idx ? { wordStr: word, wordArr: formatWord(word) } : e
+        i === idx ? { wordStr: word, wordArr: formatWord(word, solution) } : e
       );
-    });
-  };
-
-  const formatWord = (word: string): wordArr => {
-    return word.split("").map((char, idx) => {
-      const { gray, yellow, green } = Color;
-      let color: Color = gray;
-      const existInSolution: boolean = solution.includes(char);
-      const positionCorrect: boolean = solution[idx] === char;
-
-      if (positionCorrect) color = green;
-      else if (existInSolution) color = yellow;
-
-      return { char, color };
     });
   };
 
@@ -45,13 +32,13 @@ const Wordle = ({ solution, gameState, setGameState }: Props) => {
     if (isSingleLetter) {
       if (word.wordStr.length < 5) {
         const wordStr: string = word.wordStr + key;
-        const wordArr: wordArr = formatWord(wordStr);
+        const wordArr: wordArr = formatWord(wordStr, solution);
         setWord({ wordStr, wordArr });
       }
     } else if (key === "backspace") {
       if (word.wordStr.length) {
         const wordStr: string = word.wordStr.slice(0, -1);
-        const wordArr: wordArr = formatWord(wordStr);
+        const wordArr: wordArr = formatWord(wordStr, solution);
         setWord({ wordStr, wordArr });
       }
     } else if (key === "enter") {
@@ -107,4 +94,4 @@ const Wordle = ({ solution, gameState, setGameState }: Props) => {
   );
 };
 
-export default Wordle;
+export default WordleGame;

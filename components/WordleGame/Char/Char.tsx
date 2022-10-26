@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { IChar } from "../../types/types";
+import { IChar } from "../../../types/types";
 import styles from "./Char.module.css";
 
 interface Props {

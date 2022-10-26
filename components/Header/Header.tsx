@@ -7,7 +7,7 @@ const Header = () => {
 
   return (
     <header className={styles.header}>
-      <h2 className={styles.title}>Wordle</h2>
+      <h2 className={styles.title}>yetAnotherWordle</h2>
       <img
         className={styles.theme}
         src="/moon-solid.svg"

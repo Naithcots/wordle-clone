@@ -1,4 +1,4 @@
-import { IWord } from "../../types/types";
+import { IWord } from "../../../types/types";
 import Char from "../Char/Char";
 import styles from "./Line.module.css";
 
