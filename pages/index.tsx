@@ -8,6 +8,8 @@ import styles from "../styles/Home.module.css";
 import getRandom from "../helpers/getRandom";
 import Modal from "../components/Modal/Modal";
 import { gameStateEnum } from "../types/types";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Home: NextPage = () => {
   const [solution, setSolution] = useState<string | null>(null);
@@ -18,7 +20,7 @@ const Home: NextPage = () => {
   const [finishModalOpen, setFinishModalOpen] = useState<boolean>(false);
   const { error, isLoading, data } = useQuery(["words"], () =>
     axios
-      .get("http://localhost:1337/words")
+      .get("https://wordle-db.onrender.com/wordleWords")
       .then((res: AxiosResponse) => res.data)
   );
 
@@ -76,6 +78,7 @@ const Home: NextPage = () => {
       <main className={styles.main}>
         {gameState != gameStateEnum.start && (
           <WordleGame
+            dictionary={data}
             solution={solution}
             gameState={gameState}
             setGameState={setGameState}
@@ -107,6 +110,7 @@ const Home: NextPage = () => {
           </button>
         </Modal>
       )}
+      <ToastContainer />
     </>
   );
 };

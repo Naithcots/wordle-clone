@@ -4,6 +4,11 @@ enum Color {
   green = "green",
 }
 
+interface IResponseWord {
+  id: number;
+  word: string;
+}
+
 interface IChar {
   char: string;
   color: Color;
@@ -24,4 +29,4 @@ enum gameStateEnum {
 }
 
 export { Color, gameStateEnum };
-export type { IChar, IWord, wordArr };
+export type { IResponseWord, IChar, IWord, wordArr };

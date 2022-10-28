@@ -1,16 +1,28 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import formatWord from "../../helpers/formatWord";
-import { gameStateEnum, IWord, wordArr } from "../../types/types";
+import {
+  gameStateEnum,
+  IResponseWord,
+  IWord,
+  wordArr,
+} from "../../types/types";
 import Line from "./Line/Line";
 import styles from "./Wordle.module.css";
+import { toast } from "react-toastify";
 
 interface Props {
+  dictionary: IResponseWord[];
   solution: string;
   gameState: gameStateEnum;
   setGameState: Dispatch<SetStateAction<gameStateEnum>>;
 }
 
-const WordleGame = ({ solution, gameState, setGameState }: Props) => {
+const WordleGame = ({
+  dictionary,
+  solution,
+  gameState,
+  setGameState,
+}: Props) => {
   const [turn, setTurn] = useState<number>(0);
   const [word, setWord] = useState<IWord>({ wordStr: "", wordArr: [] });
   const [words, setWords] = useState<IWord[]>([...Array(5)]);
@@ -48,6 +60,22 @@ const WordleGame = ({ solution, gameState, setGameState }: Props) => {
           setWord({ wordStr: "", wordArr: [] });
           setTurn((prev) => prev + 1);
           setGameState(gameStateEnum.finishWin);
+          return;
+        }
+
+        // Check if word do exist in the dictionary
+        const exists = dictionary.find((_word) => _word.word === word.wordStr);
+        if (!exists) {
+          toast.error("Word do not exist in dictionary!", {
+            position: "bottom-center",
+            autoClose: 2500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "light",
+          });
           return;
         }
 
