@@ -11,6 +11,8 @@ import styles from "./Wordle.module.css";
 import { toast } from "react-toastify";
 
 interface Props {
+  words: IWord[];
+  setWords: Function;
   dictionary: IResponseWord[];
   solution: string;
   gameState: gameStateEnum;
@@ -18,6 +20,8 @@ interface Props {
 }
 
 const WordleGame = ({
+  words,
+  setWords,
   dictionary,
   solution,
   gameState,
@@ -25,7 +29,6 @@ const WordleGame = ({
 }: Props) => {
   const [turn, setTurn] = useState<number>(0);
   const [word, setWord] = useState<IWord>({ wordStr: "", wordArr: [] });
-  const [words, setWords] = useState<IWord[]>([...Array(5)]);
 
   const addWord = (word: string, idx: number) => {
     // Set word at correct index in words array

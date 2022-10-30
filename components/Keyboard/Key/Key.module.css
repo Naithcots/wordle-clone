@@ -1,0 +1,18 @@
+.key {
+  --color: lightgray;
+  min-width: 45px;
+  height: 45px;
+  color: #000;
+  background-color: var(--color);
+  /* padding: 1.25em 0.95em; */
+  /* padding: 1em; */
+  text-align: center;
+  text-transform: capitalize;
+  border-radius: 0.125em;
+  /* flex: 1; */
+  font-size: 1rem;
+  font-weight: 600;
+
+  cursor: pointer;
+  border: none;
+}

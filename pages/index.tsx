@@ -7,12 +7,14 @@ import { NextPage } from "next";
 import styles from "../styles/Home.module.css";
 import getRandom from "../helpers/getRandom";
 import Modal from "../components/Modal/Modal";
-import { gameStateEnum } from "../types/types";
+import { gameStateEnum, IWord } from "../types/types";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Keyboard from "../components/Keyboard/Keyboard";
 
 const Home: NextPage = () => {
   const [solution, setSolution] = useState<string | null>(null);
+  const [words, setWords] = useState<IWord[]>([...Array(5)]);
   const [gameState, setGameState] = useState<gameStateEnum>(
     gameStateEnum.start
   );
@@ -77,12 +79,17 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         {gameState != gameStateEnum.start && (
-          <WordleGame
-            dictionary={data}
-            solution={solution}
-            gameState={gameState}
-            setGameState={setGameState}
-          />
+          <>
+            <WordleGame
+              words={words}
+              setWords={setWords}
+              dictionary={data}
+              solution={solution}
+              gameState={gameState}
+              setGameState={setGameState}
+            />
+            <Keyboard words={words} />
+          </>
         )}
       </main>
 
