@@ -29,6 +29,7 @@ const Home: NextPage = () => {
   const restartGame = async (): Promise<void> => {
     const word: string = getRandom(data);
     setSolution(word);
+    setWords([...Array(5)]);
     setFinishModalOpen(false);
     setGameOverModalOpen(false);
     setGameState(gameStateEnum.inProgress);
