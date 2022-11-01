@@ -28,5 +28,15 @@ enum gameStateEnum {
   finishLose = 4,
 }
 
+type key = string;
+
+interface Ikey {
+  key: string;
+  color: null | Color;
+  id: number;
+}
+
+type TKeyboard = Ikey[];
+
 export { Color, gameStateEnum };
-export type { IResponseWord, IChar, IWord, wordArr };
+export type { IResponseWord, IChar, IWord, wordArr, key, Ikey, TKeyboard };
