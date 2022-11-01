@@ -56,7 +56,7 @@ const Home: NextPage = () => {
     return (
       <div className={styles.info}>
         <h2 className={styles["error-text"]}>
-          Oopsie! We couldn't get words for you.
+          Oopsie! We couldn&apos;t get words for you.
         </h2>
         <p className={styles.text}>Please try again later</p>
       </div>
