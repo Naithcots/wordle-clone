@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
+import WordleContext from "../../../context/WordleContext";
 import { Ikey } from "../../../types/types";
 import styles from "./Key.module.css";
 
@@ -8,6 +9,7 @@ interface Props {
 
 const Key = ({ _key }: Props) => {
   const ref = useRef<null | HTMLButtonElement>(null);
+  const { handleKeyUp } = useContext(WordleContext);
   useEffect(() => {
     _key.color &&
       ref &&
@@ -16,7 +18,11 @@ const Key = ({ _key }: Props) => {
   }, [_key]);
 
   return (
-    <button ref={ref} className={styles.key}>
+    <button
+      ref={ref}
+      className={styles.key}
+      onClick={() => handleKeyUp(_key.key)}
+    >
       {_key.key}
     </button>
   );

@@ -1,66 +1,37 @@
 import Head from "next/head";
-import WordleGame from "../components/WordleGame/Wordle";
-import { useEffect, useState } from "react";
 import { NextPage } from "next";
-import styles from "../styles/Home.module.css";
-import Modal from "../components/Modal/Modal";
-import { gameStateEnum, IWord } from "../types/types";
+import { useContext } from "react";
+import { gameStateEnum } from "../types/types";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import WordleGame from "../components/WordleGame/Wordle";
 import Keyboard from "../components/Keyboard/Keyboard";
-import { useQuery } from "@tanstack/react-query";
-import axios, { AxiosResponse } from "axios";
-import { IResponseWord } from "../types/types";
+import Modal from "../components/Modal/Modal";
+import WordleContext from "../context/WordleContext";
+import useWordle from "../hooks/useWordle";
+import styles from "../styles/Home.module.css";
+import "react-toastify/dist/ReactToastify.css";
 
 const Home: NextPage = () => {
-  const [solution, setSolution] = useState<string | null>(null);
-  const [words, setWords] = useState<IWord[]>([...Array(5)]);
-  const [gameState, setGameState] = useState<gameStateEnum>(
-    gameStateEnum.start
-  );
-  const [gameOverModalOpen, setGameOverModalOpen] = useState<boolean>(false);
-  const [finishModalOpen, setFinishModalOpen] = useState<boolean>(false);
-
-  const { error, isLoading, refetch } = useQuery<IResponseWord>(
-    ["random"],
-    () =>
-      axios
-        .get("http://localhost:5400/random")
-        .then((res: AxiosResponse) => res.data),
-    {
-      enabled: false,
-    }
-  );
-
-  const restartGame = async (): Promise<void> => {
-    const result = await refetch();
-    if (!result.data) return;
-    setSolution(result.data.word);
-    setWords([...Array(5)]);
-    setFinishModalOpen(false);
-    setGameOverModalOpen(false);
-    setGameState(gameStateEnum.inProgress);
-  };
-
-  useEffect(() => {
-    if (gameState === gameStateEnum.start) {
-      restartGame();
-    }
-    if (gameState === gameStateEnum.finishWin) {
-      setFinishModalOpen(true);
-    }
-    if (gameState === gameStateEnum.finishLose) {
-      setGameOverModalOpen(true);
-    }
-  }, [gameState]);
+  const { error, isLoading } = useWordle();
+  const {
+    gameState,
+    setGameState,
+    solution,
+    gameOverModalOpen,
+    finishModalOpen,
+    setGameOverModalOpen,
+    setFinishModalOpen,
+  } = useContext(WordleContext);
 
   if (error)
     return (
-      <div className={styles.info}>
-        <h2 className={styles["error-text"]}>
-          Oopsie! We couldn&apos;t get words for you.
-        </h2>
-        <p className={styles.text}>Please try again later</p>
+      <div className={styles["info-container"]}>
+        <div className={styles.info}>
+          <h3 className={styles["error-text"]}>
+            Oopsie! We couldn&apos;t get words for you.
+          </h3>
+          <p className={styles.text}>Please try again later</p>
+        </div>
       </div>
     );
 
@@ -83,14 +54,8 @@ const Home: NextPage = () => {
       <main className={styles.main}>
         {gameState != gameStateEnum.start && (
           <>
-            <WordleGame
-              words={words}
-              setWords={setWords}
-              solution={solution}
-              gameState={gameState}
-              setGameState={setGameState}
-            />
-            <Keyboard words={words} />
+            <WordleGame />
+            <Keyboard />
           </>
         )}
       </main>
@@ -107,7 +72,7 @@ const Home: NextPage = () => {
       )}
 
       {gameOverModalOpen && (
-        <Modal setOpen={setFinishModalOpen} delay={1500}>
+        <Modal setOpen={setGameOverModalOpen} delay={1500}>
           <h1>Game Over!</h1>
           <p>Better luck next time.</p>
           <p>
