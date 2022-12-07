@@ -1,17 +1,15 @@
-import { useEffect, useState } from "react";
-import { Color, IWord, TKeyboard } from "../../types/types";
+import { useContext, useEffect, useState } from "react";
+import { Color, TKeyboard } from "../../types/types";
 import Key from "./Key/Key";
 import keys from "../../helpers/keyboardKeys";
 import styles from "./Keyboard.module.css";
+import WordleContext from "../../context/WordleContext";
 
 const _keyboard: TKeyboard = keys.map((key, id) => ({ key, color: null, id }));
 
-interface Props {
-  words: IWord[];
-}
-
-const Keyboard = ({ words }: Props) => {
+const Keyboard = () => {
   const [keyboard, setKeyboard] = useState<TKeyboard>(_keyboard);
+  const { words } = useContext(WordleContext);
 
   const rowOne = keyboard.slice(0, 10);
   const rowTwo = keyboard.slice(10, 19);
@@ -23,7 +21,7 @@ const Keyboard = ({ words }: Props) => {
       wordsArr.forEach((word) => {
         word?.forEach((char) => {
           const key = keyboard.find((key) => key.key === char.char);
-          if (key.color !== (Color.green || Color.yellow)) {
+          if (key.color !== Color.green && key.color !== Color.yellow) {
             setKeyboard((prev) =>
               prev.map((key) =>
                 key.key == char.char ? { ...key, color: char.color } : key
