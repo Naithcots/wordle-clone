@@ -1,16 +1,16 @@
 import Head from "next/head";
 import WordleGame from "../components/WordleGame/Wordle";
-import { useQuery } from "@tanstack/react-query";
-import axios, { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { NextPage } from "next";
 import styles from "../styles/Home.module.css";
-import getRandom from "../helpers/getRandom";
 import Modal from "../components/Modal/Modal";
 import { gameStateEnum, IWord } from "../types/types";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Keyboard from "../components/Keyboard/Keyboard";
+import { useQuery } from "@tanstack/react-query";
+import axios, { AxiosResponse } from "axios";
+import { IResponseWord } from "../types/types";
 
 const Home: NextPage = () => {
   const [solution, setSolution] = useState<string | null>(null);
@@ -20,29 +20,31 @@ const Home: NextPage = () => {
   );
   const [gameOverModalOpen, setGameOverModalOpen] = useState<boolean>(false);
   const [finishModalOpen, setFinishModalOpen] = useState<boolean>(false);
-  const { error, isLoading, data } = useQuery(["words"], () =>
-    axios
-      .get("https://wordle-db.onrender.com/wordleWords")
-      .then((res: AxiosResponse) => res.data)
+
+  const { error, isLoading, refetch } = useQuery<IResponseWord>(
+    ["random"],
+    () =>
+      axios
+        .get("http://localhost:5400/random")
+        .then((res: AxiosResponse) => res.data),
+    {
+      enabled: false,
+    }
   );
 
   const restartGame = async (): Promise<void> => {
-    const word: string = getRandom(data);
-    setSolution(word);
+    const result = await refetch();
+    if (!result.data) return;
+    setSolution(result.data.word);
     setWords([...Array(5)]);
     setFinishModalOpen(false);
     setGameOverModalOpen(false);
     setGameState(gameStateEnum.inProgress);
   };
 
-  // Initial game depends on async words data load
-  useEffect(() => {
-    data && restartGame();
-  }, [data]);
-
   useEffect(() => {
     if (gameState === gameStateEnum.start) {
-      data && restartGame();
+      restartGame();
     }
     if (gameState === gameStateEnum.finishWin) {
       setFinishModalOpen(true);
@@ -84,7 +86,6 @@ const Home: NextPage = () => {
             <WordleGame
               words={words}
               setWords={setWords}
-              dictionary={data}
               solution={solution}
               gameState={gameState}
               setGameState={setGameState}

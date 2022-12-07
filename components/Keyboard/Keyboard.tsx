@@ -23,7 +23,7 @@ const Keyboard = ({ words }: Props) => {
       wordsArr.forEach((word) => {
         word?.forEach((char) => {
           const key = keyboard.find((key) => key.key === char.char);
-          if (key.color !== (Color.green || Color.yellow)) {
+          if (key.color !== (Color.green && Color.yellow)) {
             setKeyboard((prev) =>
               prev.map((key) =>
                 key.key == char.char ? { ...key, color: char.color } : key

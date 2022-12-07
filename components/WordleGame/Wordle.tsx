@@ -1,19 +1,14 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import formatWord from "../../helpers/formatWord";
-import {
-  gameStateEnum,
-  IResponseWord,
-  IWord,
-  wordArr,
-} from "../../types/types";
+import { gameStateEnum, IWord, wordArr } from "../../types/types";
 import Line from "./Line/Line";
 import styles from "./Wordle.module.css";
 import { toast } from "react-toastify";
+import checkWord from "../../helpers/checkWord";
 
 interface Props {
   words: IWord[];
-  setWords: Function;
-  dictionary: IResponseWord[];
+  setWords: Dispatch<SetStateAction<IWord[]>>;
   solution: string;
   gameState: gameStateEnum;
   setGameState: Dispatch<SetStateAction<gameStateEnum>>;
@@ -22,13 +17,13 @@ interface Props {
 const WordleGame = ({
   words,
   setWords,
-  dictionary,
   solution,
   gameState,
   setGameState,
 }: Props) => {
   const [turn, setTurn] = useState<number>(0);
   const [word, setWord] = useState<IWord>({ wordStr: "", wordArr: [] });
+  const toastId = 1;
 
   const addWord = (word: string, idx: number) => {
     // Set word at correct index in words array
@@ -39,7 +34,7 @@ const WordleGame = ({
     });
   };
 
-  const handleKeyUp = (e: KeyboardEvent): void => {
+  const handleKeyUp = async (e: KeyboardEvent): Promise<void> => {
     const key: string = e.key.toLowerCase();
     const isSingleLetter: boolean = new RegExp(/^[a-z]$/).test(key);
     if (!isSingleLetter && key !== "backspace" && key !== "enter") return;
@@ -66,10 +61,10 @@ const WordleGame = ({
           return;
         }
 
-        // Check if word do exist in the dictionary
-        const exists = dictionary.find((_word) => _word.word === word.wordStr);
+        const exists = (await checkWord(word.wordStr)).exists;
         if (!exists) {
           toast.error("Word do not exist in dictionary!", {
+            toastId: toastId,
             position: "bottom-center",
             autoClose: 2500,
             hideProgressBar: false,
