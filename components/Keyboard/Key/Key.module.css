@@ -1,18 +1,25 @@
 .key {
   --color: lightgray;
-  min-width: 45px;
+  width: 30px;
+  width: clamp(25px, 8vmin, 50px);
   height: 45px;
   color: #000;
   background-color: var(--color);
-  /* padding: 1.25em 0.95em; */
-  /* padding: 1em; */
   text-align: center;
   text-transform: capitalize;
   border-radius: 0.125em;
-  /* flex: 1; */
   font-size: 1rem;
   font-weight: 600;
 
   cursor: pointer;
   border: none;
+
+  display: grid;
+  place-items: center;
+}
+
+.key-long {
+  composes: key;
+  width: 35px;
+  width: clamp(35px, 12vmin, 70px);
 }
