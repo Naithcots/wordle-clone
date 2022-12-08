@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import { Color, TKeyboard } from "../../types/types";
+import { TKeyboard } from "../../types/types";
 import Key from "./Key/Key";
 import keys from "../../helpers/keyboardKeys";
 import styles from "./Keyboard.module.css";
 import WordleContext from "../../context/WordleContext";
+import setKeysColor from "../../helpers/setKeysColor";
 
 const _keyboard: TKeyboard = keys.map((key, id) => ({ key, color: null, id }));
 
@@ -18,18 +19,8 @@ const Keyboard = () => {
   useEffect(() => {
     setTimeout(() => {
       const wordsArr = words.map((word) => word?.wordArr);
-      wordsArr.forEach((word) => {
-        word?.forEach((char) => {
-          const key = keyboard.find((key) => key.key === char.char);
-          if (key.color !== Color.green && key.color !== Color.yellow) {
-            setKeyboard((prev) =>
-              prev.map((key) =>
-                key.key == char.char ? { ...key, color: char.color } : key
-              )
-            );
-          }
-        });
-      });
+      const newKeyboard = setKeysColor(wordsArr, _keyboard);
+      setKeyboard(newKeyboard);
     }, 1250);
   }, [words]);
 

@@ -67,7 +67,22 @@ export const WordleProvider = ({ children }: Props) => {
           return;
         }
 
-        const exists = (await checkWord(word.wordStr)).exists;
+        const res = await checkWord(word.wordStr);
+        if (!res) {
+          toast.error("We couldn't verify this word.", {
+            toastId: toastId,
+            position: "bottom-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "light",
+          });
+          return;
+        }
+        const exists = res.exists;
         if (!exists) {
           toast.error("Word do not exist in dictionary!", {
             toastId: toastId,
