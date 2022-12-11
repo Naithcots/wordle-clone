@@ -1,7 +1,12 @@
 enum Color {
   gray = "gray",
-  yellow = "yellow",
+  yellow = "#fbbf24",
   green = "green",
+}
+
+interface IResponseWord {
+  id: number;
+  word: string;
 }
 
 interface IChar {
@@ -9,10 +14,29 @@ interface IChar {
   color: Color;
 }
 
+type wordArr = IChar[];
+
 interface IWord {
-  word: IChar[];
-  // hidden: boolean;
+  wordArr: wordArr;
+  wordStr: string;
 }
 
-export { Color };
-export type { IChar, IWord };
+enum gameStateEnum {
+  start = 1,
+  inProgress = 2,
+  finishWin = 3,
+  finishLose = 4,
+}
+
+type key = string;
+
+interface Ikey {
+  key: string;
+  color: null | Color;
+  id: number;
+}
+
+type TKeyboard = Ikey[];
+
+export { Color, gameStateEnum };
+export type { IResponseWord, IChar, IWord, wordArr, key, Ikey, TKeyboard };

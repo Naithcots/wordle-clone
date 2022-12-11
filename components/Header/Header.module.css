@@ -1,4 +1,24 @@
 .header {
   width: 100%;
+  padding: 1.25em;
+
   text-align: center;
+  position: relative;
+}
+
+.title {
+  margin: 0;
+}
+
+.theme {
+  filter: var(--img-filter);
+
+  width: 1.15rem;
+  position: absolute;
+  top: 50%;
+  right: 1.25em;
+
+  transform: translateY(-50%);
+
+  cursor: pointer;
 }
